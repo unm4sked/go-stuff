@@ -24,11 +24,14 @@ func main(){
 	string_body := string(bytes)
 	fmt.Println(string_body)
 	resp.Body.Close()
+	fmt.Println("----------------------------")
 
 	var s SitemapIndex
 	xml.Unmarshal(bytes, &s)
+	//fmt.Println(s.Locations)
 
-	fmt.Println("----------------------------")
 
-	fmt.Println(s.Locations)
+	for _, Location := range s.Locations {
+		fmt.Printf("\n %s",Location)
+	}
 }

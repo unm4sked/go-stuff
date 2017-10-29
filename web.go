@@ -6,32 +6,28 @@ import ("fmt"
 "encoding/xml")
 
 type SitemapIndex struct{
-	Locations []Location `xml:"sitemap"`
+	Locations []string `xml:"sitemap>loc"`
 }
 
-type Location struct{
-	Loc string `xml:"loc"`
+type News strucy {
+	Titles []string `xml:"url>news>title"`
+	Keywords []string `xml:"url>news>keywords"`
+	Locations []string `xml:"url>loc"`
 }
-
-func (l Location) String() string {
-	return fmt.Sprintf(l.Loc)
-}
-
 
 func main(){
+	var n News
+	var s SitemapIndex
+
 	resp, _ := http.Get("https://www.washingtonpost.com/news-sitemap-index.xml")
 	bytes, _ := ioutil.ReadAll(resp.Body)
-	string_body := string(bytes)
-	fmt.Println(string_body)
-	resp.Body.Close()
-	fmt.Println("----------------------------")
-
-	var s SitemapIndex
 	xml.Unmarshal(bytes, &s)
-	//fmt.Println(s.Locations)
 
 
 	for _, Location := range s.Locations {
-		fmt.Printf("\n %s",Location)
+		resp, _ := http.Get(Location)
+		bytes, _ := ioutil.ReadAll(resp.Body)
+		xml.Unmarshal(bytes, &s)
+		
 	}
 }
